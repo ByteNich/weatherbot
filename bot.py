@@ -22,7 +22,7 @@ dp = Dispatcher()
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
-    await message.answer(f"Привет, {html.bold(message.from_user.full_name)}!\nВведи /w название города , чтобы узнать погоду\nПример: /w Москва")
+    await message.answer(f"Привет, {html.bold(message.from_user.full_name)}!\nВведи /weather название города , чтобы узнать погоду\nПример: /weather Москва")
 
 
 @dp.message(Command(commands='weather'))
@@ -31,10 +31,15 @@ async def weather_answer(message:Message,
                         ):
     asrgs = command.args
     try:
-        r = requests.get(f"http://api.weatherapi.com/v1/current.json?key={TOKEN_API_WEATHER}&q={asrgs}").json()
+        r = requests.get(f"http://api.weatherapi.com/v1/current.json?key={TOKEN_API_WEATHER}&q={asrgs}&lang=ru").json()
         city = r['location']['name']
+        time_local = r['location']['localtime'].split()[1]
+        condition = r['current']['condition']['text']
         temp_c = r['current']['temp_c']
-        await message.answer(f'В городе {city} сейчас {temp_c}°C')
+        wind_kph = r['current']['wind_kph']
+        
+
+        await message.answer(f"В городе {city} сейчас {temp_c}°C\nМестное время {time_local}\n{condition}\nСкорость ветра {wind_kph} км/ч")
     except:
         await message.answer('Введёный город не найден')
 
