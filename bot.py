@@ -41,7 +41,7 @@ async def weather_answer(message: Message, command: CommandObject):
         await message.answer(
             f"В городе {city} сейчас {temp_c}°C\nМестное время {time_local}\n{condition}\nСкорость ветра {wind_kph} км/ч"
         )
-    except:
+    except:  # noqa: E722
         await message.answer("Введёный город не найден")
 
 
